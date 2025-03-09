@@ -22,6 +22,12 @@
             border: 1px solid #ddd;
             padding: 10px;
             margin: 10px;
+            text-align: left;
+            word-wrap: break-word;
+        }
+        .message a {
+            color: blue;
+            text-decoration: underline;
         }
     </style>
 </head>
@@ -102,11 +108,13 @@
                     });
                     const fullMsg = await msgResp.json();
 
+                    const formattedBody = formatLinks(fullMsg.text || "No text content");
+
                     inboxHTML += `
                         <div class="message">
                             <p><strong>📧 From:</strong> ${fullMsg.from.address}</p>
                             <p><strong>📜 Subject:</strong> ${fullMsg.subject}</p>
-                            <p><strong>📩 Message:</strong> ${fullMsg.text || "No text content"}</p>
+                            <p><strong>📩 Message:</strong> ${formattedBody}</p>
                         </div>
                     `;
                 }
@@ -115,6 +123,12 @@
             } else {
                 document.getElementById("inbox").innerHTML = "❌ Failed to fetch inbox.";
             }
+        }
+
+        // Function to detect and convert URLs into clickable links
+        function formatLinks(text) {
+            const urlPattern = /(https?:\/\/[^\s]+)/g;
+            return text.replace(urlPattern, (url) => `<a href="${url}" target="_blank">${url}</a>`);
         }
     </script>
 
